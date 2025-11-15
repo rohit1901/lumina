@@ -201,15 +201,6 @@ MIT License
 
 ---
 
-## 🙏 Credits
-
-Developed by Lumina Dev
-- Python: Poetry, Click, PyInstaller
-- Electron: TypeScript, Electron, Jest
-- macOS: AppleScript
-
----
-
 ## 💡 Tips & Advanced Usage
 
 - To add more appearance features, extend `mactheme/core.py` and the CLI.
