@@ -1,0 +1,103 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';"
+        />
+        <title>Lumina</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <div>
+            <div>
+                <h1>Lumina</h1>
+                <button class="close-btn" onclick="window.close()">✕</button>
+            </div>
+            <div>
+                <div>
+                    <div>
+                        <div>☀️</div>
+                        <div>Light</div>
+                    </div>
+                    <div>
+                        <div></div>
+                        <div>Dark</div>
+                    </div>
+                    <div>
+                        <div></div>
+                        <div>Auto</div>
+                    </div>
+                </div>
+                <div>
+                    <div>ℹ️</div>
+                    <div>
+                        <div>Current Mode</div>
+                        <div>Loading...</div>
+                    </div>
+                </div>
+                <div>
+                    <p>
+                        <strong>Tip:</strong> Auto mode follows your Night Shift
+                        schedule. Configure it in System Preferences → Displays
+                        → Night Shift.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const { ipcRenderer } = require("electron");
+            let currentMode = "light";
+            // Update UI when mode changes
+            ipcRenderer.on("mode-update", (event, mode) => {
+                currentMode = mode;
+                updateUI(mode);
+            });
+            function updateUI(mode) {
+                // Update active state
+                document.querySelectorAll(".mode-option").forEach((option) => {
+                    option.classList.remove("active");
+                    if (option.dataset.mode === mode) {
+                        option.classList.add("active");
+                    }
+                });
+                // Update status
+                const statusTitle = document.getElementById("statusTitle");
+                const statusDescription =
+                    document.getElementById("statusDescription");
+                const statusIcon = document.getElementById("statusIcon");
+                switch (mode) {
+                    case "light":
+                        statusTitle.textContent = "Light Mode";
+                        statusDescription.textContent =
+                            "Active – Best for daytime use";
+                        statusIcon.textContent = "☀️";
+                        break;
+                    case "dark":
+                        statusTitle.textContent = "Dark Mode";
+                        statusDescription.textContent =
+                            "Active – Reduces eye strain in low light";
+                        statusIcon.textContent = " ";
+                        break;
+                    case "auto":
+                        statusTitle.textContent = "Auto Mode";
+                        statusDescription.textContent =
+                            "Follows Night Shift schedule";
+                        statusIcon.textContent = " ";
+                        break;
+                }
+            }
+            function setMode(mode) {
+                // Visual feedback
+                const option = document.querySelector(`[data-mode="${mode}"]`);
+                option.classList.add("clicked");
+                setTimeout(() => option.classList.remove("clicked"), 200);
+                // This would trigger the main process to change mode
+                // In production, use IPC to communicate with main process
+                console.log(`Setting mode to: ${mode}`);
+            }
+        </script>
+    </body>
+</html>
