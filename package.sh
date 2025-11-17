@@ -12,7 +12,7 @@ PACKAGE_LINUX=0
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ELECTRON_DIR="$DIR/electron"
-PYTHON_CLI_PATH="$DIR/python/dist/theme-toggle/theme-toggle"
+PYTHON_CLI_PATH="$DIR/python/dist/theme-toggle"
 
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
@@ -124,7 +124,7 @@ package_mac() {
     echo "Creating DMG installer for macOS..."
     npm run package:mac
 
-    DMG_PATH_FOUND=$(ls -1 dist/Lumina-*.dmg 2> /dev/null | head -n 1)
+    DMG_PATH_FOUND=$(ls -1 out/Lumina-*.dmg 2> /dev/null | head -n 1)
     if [[ -n "$DMG_PATH_FOUND" ]]; then
         echo -e "${GREEN}✅ macOS DMG created successfully!${NC}"
         echo "Location: $DMG_PATH_FOUND"
@@ -199,7 +199,7 @@ main() {
     echo "Next steps:"
     echo ""
     if [ "$PACKAGE_MAC" -eq 1 ]; then
-        echo "  📦 Find DMG in: electron/dist/"
+        echo "  📦 Find DMG in: electron/out/"
         echo "  📋 Test install by opening DMG and dragging Lumina to Applications."
     fi
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

@@ -181,3 +181,5 @@ cython_debug/
 .cursorindexingignore
 .DS_Store
 /electron/node_modules
+/electron/out
+electron/resources/theme-toggle

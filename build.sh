@@ -168,9 +168,9 @@ build_electron() {
         echo -e "${GREEN}✅ TypeScript compiled successfully${NC}"
 
         # Check if Python CLI exists for Electron to use
-        if [ ! -f "$DIR/python/dist/theme-toggle/theme-toggle" ]; then
+        if [ ! -f "$DIR/python/dist/theme-toggle" ]; then
             echo -e "${YELLOW}⚠️  Warning: Python CLI not found at:${NC}"
-            echo "   $DIR/python/dist/theme-toggle/theme-toggle"
+            echo "   $DIR/python/dist/theme-toggle"
             echo ""
             echo "   Electron app requires Python CLI to function."
             echo "   Run: $0 --python-only"
@@ -250,10 +250,10 @@ main() {
 
     if [ "$BUILD_PYTHON" -eq 1 ]; then
         echo "  🐍 Test Python CLI:"
-        echo "     ./python/dist/theme-toggle/theme-toggle current"
+        echo "     ./python/dist/theme-toggle current"
         echo ""
         echo "  🐍 Install CLI system-wide:"
-        echo "     sudo ln -s $(pwd)/python/dist/theme-toggle/theme-toggle /usr/local/bin/theme-toggle"
+        echo "     sudo ln -s $(pwd)/python/dist/theme-toggle /usr/local/bin/theme-toggle"
         echo ""
     fi
 

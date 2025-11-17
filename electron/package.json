@@ -34,15 +34,16 @@
   "build": {
     "appId": "com.lumina.switch",
     "productName": "Lumina",
+    "directories": {
+      "output": "out"
+    },
     "mac": {
       "category": "public.app-category.utilities",
       "target": [
         {
           "target": "dmg",
           "arch": [
-            "x64",
-            "arm64",
-            "universal"
+            "arm64"
           ]
         }
       ],
@@ -54,19 +55,29 @@
       "darkModeSupport": true,
       "extendInfo": {
         "LSUIElement": true
-      }
+      },
+      "files": [
+        "dist/**/*",
+        "assets/**/*",
+        "resources/theme-toggle",
+        "!**/node_modules/*/test{,s}/**",
+        "!**/node_modules/*/example{,s}/**",
+        "!**/node_modules/*/doc{,s}/**",
+        "!**/node_modules/*/demo{,s}/**",
+        "!**/node_modules/.bin/**",
+        "!**/*.md",
+        "!**/*.map",
+        "!**/coverage/**",
+        "!**/.git/**",
+        "!**/tests/**"
+      ],
+      "extraResources": [
+        {
+          "from": "../python/dist/theme-toggle",
+          "to": "theme-toggle"
+        }
+      ]
     },
-    "files": [
-      "dist/**/*",
-      "assets/**/*",
-      "resources/**/*"
-    ],
-    "extraResources": [
-      {
-        "from": "../python/dist/theme-toggle",
-        "to": "theme-toggle"
-      }
-    ],
     "dmg": {
       "contents": [
         {
