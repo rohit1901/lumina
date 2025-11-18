@@ -24,22 +24,31 @@ class TestAppearanceMode(unittest.TestCase):
 
     @patch("subprocess.run")
     def test_set_dark_mode(self, mock_run):
-        """Test setting dark mode."""
         set_appearance(AppearanceMode.DARK)
-        mock_run.assert_called_once()
-        self.assertIn("dark mode to true", " ".join(mock_run.call_args[0][0]))
+        assert mock_run.call_count == 1
+        mock_run.assert_any_call(
+            [
+                "osascript",
+                "-e",
+                'tell application "System Events" to tell appearance preferences to set dark mode to true',
+            ],
+            check=True,
+            timeout=5,
+        )
 
     @patch("subprocess.run")
     def test_set_light_mode(self, mock_run):
-        """Test setting light mode."""
         set_appearance(AppearanceMode.LIGHT)
-        mock_run.assert_called_once()
-        self.assertIn("dark mode to false", " ".join(mock_run.call_args[0][0]))
-
-    # def test_invalid_mode(self):
-    #     """Test invalid mode raises ValueError."""
-    #     with self.assertRaises(ValueError):
-    #         set_appearance("invalid")
+        assert mock_run.call_count == 1
+        mock_run.assert_any_call(
+            [
+                "osascript",
+                "-e",
+                'tell application "System Events" to tell appearance preferences to set dark mode to false',
+            ],
+            check=True,
+            timeout=5,
+        )
 
 
 if __name__ == "__main__":

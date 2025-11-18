@@ -44,13 +44,13 @@ poetry run theme-toggle auto       # Switch to auto (Night Shift) mode
 
 ### Run unit tests:
 ```
-poetry run python -m unittest discover
+pytest
 ```
 All tests should pass with `OK`.
 
 ### (Optional) Build CLI as a standalone binary:
 ```
-poetry run pyinstaller --clean mactheme/theme-toggle.spec
+./build.sh --python-only
 ```
 Symlink for system-wide use:
 ```
@@ -83,7 +83,7 @@ npm test               # Jest unit/integration tests
 npm run package:mac
 # Or use the CLI: ./package.sh --mac-only
 ```
-Find `.dmg` installer in `electron/dist/`.
+Find `.dmg` installer in `electron/out/`.
 
 ---
 
@@ -113,7 +113,7 @@ lumina/
 ├── electron/
 │   ├── src/
 │   │   ├── main.ts
-│   │   └── __tests__/
+│   │   └── __tests__/main.test.ts
 │   ├── renderer/
 │   │   ├── index.html
 │   │   └── styles.css
@@ -132,7 +132,7 @@ lumina/
 
 - **Python unit tests:**
     ```
-    poetry run python -m unittest discover
+    pytest
     ```
 - **JS/Electron tests:**
     ```

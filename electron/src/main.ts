@@ -3,7 +3,7 @@ import * as path from 'path';
 import { spawn } from 'child_process';
 
 interface AppearanceMode {
-  mode: 'light' | 'dark' | 'auto';
+  mode: 'light' | 'dark';
   label: string;
   icon: string;
 }
@@ -12,7 +12,7 @@ class LuminaApp {
   private tray: Tray | null = null;
   private window: BrowserWindow | null = null;
   private pythonPath: string;
-  private currentMode: 'light' | 'dark' | 'auto' = 'light';
+  private currentMode: 'light' | 'dark' = 'light';
   private pollInterval: NodeJS.Timeout | null = null;
 
   constructor() {
@@ -30,12 +30,6 @@ class LuminaApp {
       app.quit();
       return;
     }
-    app.on('second-instance', () => {
-      if (this.window) {
-        if (this.window.isMinimized()) this.window.restore();
-        this.window.focus();
-      }
-    });
     await app.whenReady();
 
     // Check if running on macOS
@@ -54,16 +48,6 @@ class LuminaApp {
     //this.createWindow();
     await this.updateCurrentMode();
     this.startPolling();
-
-    // macOS tray app: prevent quit on window close
-    app.on('window-all-closed', (e: Event) => {
-      e.preventDefault();
-    });
-    // app.on("activate", () => {
-    //   if (this.window === null) {
-    //     this.createWindow();
-    //   }
-    // });
   }
 
   private createTray(): void {
@@ -73,10 +57,6 @@ class LuminaApp {
 
     this.tray = new Tray(icon);
     this.tray.setToolTip(`Lumina: ${this.currentMode}`);
-
-    // this.tray.on("click", () => {
-    //   this.toggleWindow();
-    // });
 
     this.tray.on('right-click', () => {
       this.showTrayMenu();
@@ -101,13 +81,6 @@ class LuminaApp {
         checked: this.currentMode === 'dark',
         icon: this.getIconPath('moon'),
         click: () => this.setMode('dark'),
-      },
-      {
-        label: 'Auto Mode',
-        type: 'radio',
-        checked: this.currentMode === 'auto',
-        icon: this.getIconPath('clock'),
-        click: () => this.setMode('auto'),
       },
       { type: 'separator' },
       {
@@ -142,87 +115,6 @@ class LuminaApp {
     return path.join(__dirname, `../assets/${name}.png`);
   }
 
-  // private createWindow(): void {
-  //   const darkBackgroundColor = "#1e1e1e";
-  //   const lightBackgroundColor = "#ffffff";
-  //   this.window = new BrowserWindow({
-  //     width: 400,
-  //     height: 300,
-  //     show: false,
-  //     frame: false,
-  //     resizable: true,
-  //     alwaysOnTop: true,
-  //     backgroundColor: nativeTheme.shouldUseDarkColors
-  //       ? darkBackgroundColor
-  //       : lightBackgroundColor,
-  //     webPreferences: {
-  //       nodeIntegration: true,
-  //       contextIsolation: false,
-  //     },
-  //     vibrancy: "popover",
-  //     visualEffectState: "active",
-  //   });
-
-  //   this.window.loadFile(path.join(__dirname, "../renderer/index.html"));
-
-  //   this.window.on("closed", () => {
-  //     this.window = null;
-  //   });
-
-  //   this.window.on("blur", () => {
-  //     if (this.window) {
-  //       this.window.hide();
-  //     }
-  //   });
-
-  //   nativeTheme.on("updated", () => {
-  //     if (this.window) {
-  //       const backgroundColor = nativeTheme.shouldUseDarkColors
-  //         ? darkBackgroundColor
-  //         : lightBackgroundColor;
-  //       this.window.setBackgroundColor(backgroundColor);
-  //     }
-  //   });
-
-  //   this.window.webContents.on("did-finish-load", () => {
-  //     if (this.window) {
-  //       this.window.webContents.send("mode-update", this.currentMode);
-  //     }
-  //   });
-  // }
-
-  // private toggleWindow(): void {
-  //   if (!this.window) {
-  //     this.createWindow();
-  //   }
-  //   // After ensuring the window exists, check again before proceeding
-  //   if (this.window && this.window.isVisible()) {
-  //     this.window.hide();
-  //   } else if (this.window) {
-  //     this.showWindow();
-  //   }
-  // }
-
-  // private showWindow(): void {
-  //   if (!this.window) {
-  //     this.createWindow();
-  //   }
-  //   if (this.window) {
-  //     this.window.show();
-  //     this.window.focus();
-  //     // Position near tray icon
-  //     if (this.tray) {
-  //       const trayBounds = this.tray.getBounds();
-  //       const windowBounds = this.window.getBounds();
-  //       const x = Math.round(
-  //         trayBounds.x + trayBounds.width / 2 - windowBounds.width / 2,
-  //       );
-  //       const y = Math.round(trayBounds.y + trayBounds.height);
-  //       this.window.setPosition(x, y, false);
-  //     }
-  //   }
-  // }
-
   private async setMode(mode: AppearanceMode['mode']): Promise<void> {
     try {
       await this.executePythonCommand(['set', mode]);
@@ -255,14 +147,11 @@ class LuminaApp {
     try {
       const mode = await this.executePythonCommand(['current']);
       const modeText = mode.replace('Current mode: ', '').trim();
-      if (modeText === 'light' || modeText === 'dark' || modeText === 'auto') {
+      if (modeText === 'light' || modeText === 'dark') {
         this.currentMode = modeText;
         this.updateTrayMenu();
         if (this.tray) {
           this.tray.setToolTip(`Lumina: ${this.currentMode}`);
-        }
-        if (this.window && this.window.isVisible()) {
-          this.window.webContents.send('mode-update', this.currentMode);
         }
       }
     } catch (error) {

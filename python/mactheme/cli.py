@@ -27,11 +27,9 @@ def current():
 
 
 @cli.command()
-@click.argument(
-    "mode", type=click.Choice(["light", "dark", "auto"], case_sensitive=False)
-)
+@click.argument("mode", type=click.Choice(["light", "dark"], case_sensitive=False))
 def set(mode):
-    """Set the appearance mode (light, dark, or auto)."""
+    """Set the appearance mode (light or dark)."""
     try:
         appearance_mode = AppearanceMode(mode.lower())
         set_appearance(appearance_mode)
@@ -58,17 +56,6 @@ def dark():
     try:
         set_appearance(AppearanceMode.DARK)
         click.echo("Switched to dark mode")
-    except Exception as e:
-        click.echo(f"Error: {e}", err=True)
-        sys.exit(1)
-
-
-@cli.command()
-def auto():
-    """Enable auto mode (follows system schedule)."""
-    try:
-        set_appearance(AppearanceMode.AUTO)
-        click.echo("Auto mode enabled")
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
         sys.exit(1)

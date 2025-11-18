@@ -41,19 +41,17 @@ poetry install                   # Creates/activates virtualenv, installs deps
     poetry run theme-toggle current    # Query current appearance mode
     poetry run theme-toggle dark       # Switch to dark mode
     poetry run theme-toggle light      # Switch to light mode
-    poetry run theme-toggle auto       # Switch to auto mode
     poetry run theme-toggle --help     # Show help
     ```
 
 - **Run unit tests**:
     ```
-    poetry run python -m unittest discover
+    pytest
     ```
 
-- **(Optional) Build a standalone binary**:
+- **(Optional) Build a standalone binary from the root directory**:
     ```
-    poetry run pyinstaller --clean mactheme/theme-toggle.spec
-    # Results in ./dist/theme-toggle
+    ./build.sh --python-only
     ```
 
 ---
@@ -72,7 +70,7 @@ npm run dev                       # Runs Electron app in development mode
 #### **Menu bar app use:**
 - The icon appears in the macOS menu bar.
 - Left-click: Opens compact popover UI for theme selection
-- Right-click: Opens context menu ("Light", "Dark", "Auto", "Current Mode", "Quit")
+- Right-click: Opens context menu ("Light", "Dark" "Current Mode", "Quit")
 - Tray tooltip shows current mode, live-updating (polled via CLI)
 
 #### **Unit and integration tests:**
@@ -112,12 +110,9 @@ lumina/
 │   ├── src/
 │   │   ├── main.ts
 │   │   └── __tests__/
-│   │       └── integration.test.ts
-│   ├── renderer/
-│   │   ├── index.html
-│   │   └── styles.css
+│   │       └── main.test.ts
 │   ├── assets/
-│   │   └── README.md
+│   │   └── *.png
 │   ├── build/
 │   │   ├── entitlements.mac.plist
 │   │   └── entitlements.mac.inherit.plist
@@ -145,9 +140,9 @@ lumina/
 
 - Change Python backend logic: test in `python/mactheme/core.py` and CLI in `python/mactheme/cli.py`
 - Change Electron UI/logic: alter files in `electron/src/` and `electron/renderer/`
-- Test backend in isolation with `poetry run python -m unittest discover`
+- Test backend in isolation with `pytest`
 - Test frontend and integration with `npm test` (Jest)
-- Build binary for Electron release with `poetry run pyinstaller ...` and bundle for Mac DMG with `npm run package:mac`
+- Build binary for Electron release with `./build.sh` and bundle for Mac DMG with `./package.sh --mac-only`
 
 ---
 
@@ -155,19 +150,19 @@ lumina/
 
 - **Python unit tests:**
   ```
-  poetry run python -m unittest discover
+  pytest
   ```
 - **Electron/Jest tests:**
   ```
   npm test
   ```
-- **Integration tests simulate end-to-end flows** (see `electron/src/__tests__/integration.test.ts`).
+- **Integration tests simulate end-to-end flows** (see `electron/src/__tests__/main.test.ts`).
 
 ---
 
 ## 🔏 Packaging & Distribution
 
-- **Mac DMG Installer:** `electron/dist/Lumina-<version>.dmg`
+- **Mac DMG Installer:** `electron/out/Lumina-<version>.dmg`
 - **Code signing and entitlements:** See `electron/build/` and `package.json`
 - **Notarization ready:** Use `apple-id`, `team-id` for Mac App Store submission
 - **Standalone Python CLI:** Symlink system-wide if desired:
