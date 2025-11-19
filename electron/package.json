@@ -43,6 +43,7 @@
     },
     "mac": {
       "category": "public.app-category.utilities",
+      "icon": "assets/lumina.icns",
       "target": [
         {
           "target": "dmg",
@@ -51,7 +52,6 @@
           ]
         }
       ],
-      "icon": "assets/icon.icns",
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",

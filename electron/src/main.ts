@@ -7,7 +7,6 @@ type AppearanceMode = 'light' | 'dark';
 
 class LuminaApp {
   private tray: Tray | null = null;
-  private pollInterval: NodeJS.Timeout | null = null;
   private isBusy = false;
   private currentMode: AppearanceMode = 'light';
 
@@ -37,7 +36,6 @@ class LuminaApp {
 
     this.createTray();
     await this.updateCurrentMode();
-    this.startPolling();
   }
 
   private createTray(): void {
@@ -97,6 +95,11 @@ class LuminaApp {
         label: `Current: ${this.currentMode[0].toUpperCase() + this.currentMode.slice(1)}`,
         icon: this.getIconPath('info'),
         enabled: false,
+      },
+      { type: 'separator' },
+      {
+        label: 'Sync mode',
+        click: () => this.updateCurrentMode(),
       },
       { type: 'separator' },
       {
@@ -192,15 +195,6 @@ class LuminaApp {
       // No error notification for polling failure, keeps polling!
     }
   }
-
-  private startPolling(): void {
-    if (this.pollInterval) clearInterval(this.pollInterval);
-    this.pollInterval = setInterval(() => this.updateCurrentMode(), 10000);
-  }
-
-  public cleanup(): void {
-    if (this.pollInterval) clearInterval(this.pollInterval);
-  }
 }
 
 // --- Entry Point ---
@@ -208,7 +202,4 @@ const luminaApp = new LuminaApp();
 luminaApp.initialize().catch(error => {
   if (isDev) debugLog('Lumina failed to initialize:', error);
   app.quit();
-});
-app.on('will-quit', () => {
-  luminaApp.cleanup();
 });
